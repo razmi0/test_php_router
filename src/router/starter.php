@@ -1,77 +1,24 @@
 <?php
 
-use App\Router\{Route};
+use App\Router\{Route, Router};
 
 require_once BASE_DIR . '/vendor/autoload.php';
+require_once BASE_DIR . '/utils.php';
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+Router::addDefaultHeaders();
 
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);                 // Remove query string keeping only the path
-$assets_extensions = ['css', 'js', 'svg', 'png', 'jpg', 'jpeg', 'gif'];         // Define the assets extensions
 
-print_r("[Router] : request URI is $requestUri" . PHP_EOL);                     // Print the request URI
-$uri_parts = explode('.', $requestUri);                                         // Split the request URI by the dot
-$uri_extension = array_pop($uri_parts);                                        // Get the last part of the request URI
-$ask_asset = in_array($uri_extension, $assets_extensions);                        // Check if the request URI has an extension
+print_that("[Router] ", "request URI is $requestUri");                     // Print the request URI
 
-if ($ask_asset) {
-    print_r("[Router] : looking for : $uri_extension" . PHP_EOL);                     // Print the ask asset
 
-    $public_directory = BASE_DIR . '/public';                                       // Define the public directory
-    /**
-     * @see https://stackoverflow.com/questions/12077177/how-does-recursiveiteratoriterator-work-in-php
-     */
-    $rec_iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($public_directory)); // Create a recursive iterator
-}
+Router::findAsset($requestUri);
+Router::findController($requestUri);
 
-$controller = findController($requestUri);
 
-/**
- * Get and run the controller that matches the request URI
- */
-function findController(string $requestUri): void
-{
-    // $views = 'App\\Views';
-    // $views_directory = BASE_DIR . '/src/Views';
-    // $views_iterator = new DirectoryIterator($views_directory);
 
-    $controller = null;                                                            // Define the controller
-    $namespace = 'App\\Controllers';                                              // Define the controllers namespace
-    $controllers_directory = BASE_DIR . '/src/Controllers';                         // Define the controllers directory
-    $controllers_iterator = new DirectoryIterator($controllers_directory);          // Create a directory iterator (not recursive)
-    try {
-        foreach ($controllers_iterator as $file) {                              // Iterate through each controllers file in the directory
-            if ($file->isDot() || $file->getExtension() !== 'php')              // Skip dot files and non-php files
-                continue;
-            $className = $namespace . '\\' . $file->getBasename('.php');        // Get the class name with namespace from the file name
-            $reflectionClass = new ReflectionClass($className);                 // Create a reflection class
-            $attributes = $reflectionClass->getAttributes(Route::class);        // Get the attributes
-            if (empty($attributes)) continue;                                   // If the class does not have attributes skip
 
-            foreach ($attributes as $attribute) {                               // Iterate through the attributes
-                $isRoute = $attribute->getName() === 'App\Router\Route';
-                if (!$isRoute) continue;                                            // If the attribute is not a Route attribute skip
-                $path = $attribute->newInstance()->path;                            // Get the path from a Route instance
-                $match = $requestUri === $path;                                           // Match the path with the request URI
-                if (empty($path) || !$match) continue;                              // If the path is empty or != than uri skip
-                print_r(
-                    "[Router] : found match for $requestUri"
-                        . PHP_EOL
-                        . "[Router] : returning $className"
-                        . PHP_EOL
-                );                                                                  // Print the match
-                $controller = new $className();                                     // Create a new instance of the class
-                $controller->handle();                                            // Run the handle method
-            }
-        }
-    } catch (Throwable $th) {
-
-        throw $th;
-    }
-}
 
 // // Define the routes and their corresponding handlers
 // $routes = [
