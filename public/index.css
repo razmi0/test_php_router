@@ -1,0 +1,10 @@
+img {
+  max-height: 1rem;
+  max-width: 1rem;
+}
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1ch;
+}

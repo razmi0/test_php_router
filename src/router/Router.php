@@ -29,7 +29,7 @@ class Router
                 . "; base-uri 'none' "
                 . "; form-action 'self' "
                 . "; frame-ancestors 'none' "
-                . "; require-trusted-types-for 'script' ;"
+            // . "; require-trusted-types-for 'script' ;"                                          // Prevent innerHTML injections 
         );                                                                                          // Prevent XSS
         header("X-Content-Type-Options: nosniff");                                                  // Prevent MIME type sniffing
         header("Referrer-Policy: no-referrer");                                                     // Prevent referrer leakage
@@ -38,12 +38,15 @@ class Router
         header("Access-Control-Allow-Headers: Content-Type, Authorization");                        // Allow the following headers
     }
 
+    /**
+     * Find and serve assets
+     */
     public static function findAsset(string $uri)
     {
         $uri_parts = explode('.', $uri);                                                // Split the request URI by the dot
         $uri_extension = array_pop($uri_parts);                                         // Get the last part of the request URI
         $assets_extension = ['css', 'js', 'svg', 'png', 'jpg', 'jpeg', 'gif'];          // Define the assets extensions
-        $asking_asset = in_array($uri_extension, $assets_extension);                       // Check if the request URI has an extension
+        $asking_asset = in_array($uri_extension, $assets_extension);                    // Check if the request URI has an extension
         if (!$asking_asset) return;
         $mimeTypes = [
             "js" => "application/javascript",
@@ -59,21 +62,16 @@ class Router
         $file_exist = file_exists(BASE_DIR . "/public" . $uri);                         // Check if the file exists
         if (!$file_exist) return;                                                       // If the file does not exist skip
         include BASE_DIR . "/public" . $uri;                                            // Include the file
+        exit();                                                                         // Exit the script
     }
 
     /**
      * Get and run the controller that matches the request URI
-     * exit the script after running the controller
      */
     public static function findController(string $uri): void
     {
 
-        // $views = 'App\\Views';
-        // $views_directory = BASE_DIR . '/src/Views';
-        // $views_iterator = new DirectoryIterator($views_directory);
-
-        $controller = null;                                                            // Define the controller
-        $namespace = 'App\\Controllers';                                              // Define the controllers namespace
+        $namespace = 'App\\Controllers';                                                // Define the controllers namespace
         $controllers_directory = BASE_DIR . '/src/Controllers';                         // Define the controllers directory
         $controllers_iterator = new DirectoryIterator($controllers_directory);          // Create a directory iterator (not recursive)
         try {
@@ -87,19 +85,19 @@ class Router
 
                 foreach ($attributes as $attribute) {                               // Iterate through the attributes
                     $isRoute = $attribute->getName() === 'App\Router\Route';
-                    if (!$isRoute) continue;                                            // If the attribute is not a Route attribute skip
-                    $path = $attribute->newInstance()->path;                            // Get the path from a Route instance
-                    $match = $uri === $path;                                           // Match the path with the request URI
-                    if (empty($path) || !$match) continue;                              // If the path is empty or != than uri skip
-                    print_that(
-                        "[Router] ",
-                        "found match for $uri"
-                            . PHP_EOL
-                            . "[Router] returning $className"
-                            . PHP_EOL
-                    );                                                                  // Print the match
-                    $controller = new $className();                                     // Create a new instance of the class
-                    $controller->handle();                                              // Run the handle method
+                    if (!$isRoute) continue;
+                    $route = $attribute->newInstance();                                         // If the attribute is not a Route attribute skip
+                    $match = $uri === $route->path;                                             // Match the path with the request URI
+                    if (empty($route->path) || !$match) continue;                               // If the path is empty or != than uri skip
+                    $controller = new $className();                                             // Create a new instance of the class
+                    if ($route->view) {                                                         // If the route has a view
+                        $file_exist = file_exists(BASE_DIR . "/src/views" . $route->view);      // Check if the view file exists
+                        if (!$file_exist) return;                                               // If the view file does not exist skip
+                        include BASE_DIR . "/src/views" . $route->view;                         // Include the view file
+                    } else {                                                                    // If the route does not have a view
+                        $controller();                                                          // Run the controller (invoke the object)
+                    }
+                    exit();                                                             // Exit the script
                 }
             }
         } catch (Throwable $th) {

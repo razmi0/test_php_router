@@ -5,7 +5,9 @@
       "App\\": "src/",
       "App\\Router\\": "src/router",
       "App\\Controllers\\": "src/controllers",
-      "App\\Model\\": "src/model"
+      "App\\Model\\": "src/model",
+      "App\\Middleware\\": "src/middleware",
+      "App\\Views\\": "src/views"
     }
   },
   "authors": [

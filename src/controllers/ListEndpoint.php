@@ -6,8 +6,8 @@ use App\Router\Route;
 use App\Model\Data;
 
 
-#[Route('/api/v1.0/produit/list')]
-class ListEndpoint extends AbstractController
+#[Route(path: '/api/v1.0/produit/list')]
+class ListEndpoint
 {
     public function __construct(
         private int $limit = 10,
@@ -23,10 +23,8 @@ class ListEndpoint extends AbstractController
         return json_encode($list);
     }
 
-    public function handle()
+    public function __invoke()
     {
-        print_r("hi from ListEndpoint handle" . PHP_EOL);
-        print_r($this->get());
-        print_r(PHP_EOL);
+        echo $this->get();
     }
 }

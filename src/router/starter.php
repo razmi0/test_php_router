@@ -1,20 +1,13 @@
 <?php
 
-use App\Router\{Route, Router};
+use App\Router\Router;
 
 require_once BASE_DIR . '/vendor/autoload.php';
-require_once BASE_DIR . '/utils.php';
-
-Router::addDefaultHeaders();
-
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);                 // Remove query string keeping only the path
-
-print_that("[Router] ", "request URI is $requestUri");                     // Print the request URI
-
-
-Router::findAsset($requestUri);
-Router::findController($requestUri);
+Router::addDefaultHeaders();                                                    // Add default headers
+Router::findAsset($requestUri);                                                 // Find and serve assets
+Router::findController($requestUri);                                            // Find and run controllers
 
 
 

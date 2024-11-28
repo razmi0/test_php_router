@@ -25,4 +25,9 @@ class ListOneEndpoint
         }
         return json_encode($item);
     }
+
+    public function __invoke()
+    {
+        echo $this->get();
+    }
 }
