@@ -11,25 +11,34 @@
 
 <body>
   <main>
-    <h3>controller->class_attribute->route->view</h3>
-    <p class="box">from view file referenced by #[Route(path: '/home', view: "/home.php")] and Router::findController: home.php</p>
+    <article>
+      <h3>controller->method_attribute->route->view</h3>
+      <p class="box ">from view file referenced by #[Route(path: '/home', view: "/home.php")] and Router::findController: home.php</p>
+    </article>
 
-    <h3>controller->method_attribute->injector->html</h3>
-    <div class="box" id="home-controller">jhhjhjhj</div>
+    <article>
+      <h3>controller->method_attribute->injector->html</h3>
+      <div class="box indicator" id="home-controller"></div>
+    </article>
 
-    <h3>router::findAsset->asset(css)</h3>
-    <p class="box">
-      <span class="test-css-linked">href="/index.css"</span>
-    </p>
+    <article>
+      <h3>router::findAsset->asset(css)</h3>
+      <p class="box">
+        <span class="test-css-linked">href="/index.css"</span>
+      </p>
+    </article>
 
-    <h3>router::findAsset->asset(img/png)</h3>
-    <p class="box">
-      <img src="/assets/alien_image.png" alt="image" />
-    </p>
+    <article>
+      <h3>router::findAsset->asset(img/png)</h3>
+      <p class="box">
+        <img src="/assets/alien_image.png" alt="image" />
+      </p>
+    </article>
 
-    <h3>router::findAsset->asset(js)</h3>
-    <p class="box" id="js-from-file"></p>
-
+    <article>
+      <h3>router::findAsset->asset(js)</h3>
+      <p class="box indicator" id="js-from-file"></p>
+    </article>
 
   </main>
 </body>
