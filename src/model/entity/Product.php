@@ -4,12 +4,6 @@ namespace App\Model\Entity;
 
 /**
  * Class Product
- * @property string $id
- * @property string $name
- * @property string $description
- * @property string $prix
- * @property string $date_creation
- * 
  * - **getId**
  * - **getName**
  * - **getDescription**
@@ -21,18 +15,23 @@ namespace App\Model\Entity;
  * - **setPrix**
  * - **setDateCreation**
  * - **toArray** : convert the object to an array
+ * 
+ * @phpstan-type ProductType=array{ id: string | null, name: string | null, description: string | null, prix: float | null, date_creation: string | null }
  */
 class Product
 {
 
     public function __construct(
-        private $id = null,
-        private  $name = null,
-        private  $description = null,
-        private  $prix = null,
-        private  $date_creation = null
+        private ?string $id = null,
+        private ?string $name = null,
+        private ?string $description = null,
+        private ?float $prix = null,
+        private ?string $date_creation = null
     ) {}
 
+    /**
+     * @param ProductType $data
+     */
     public static function make(array $data): Product
     {
         return new Product(
@@ -44,6 +43,10 @@ class Product
         );
     }
 
+    /**
+     * @param ProductType[] $data
+     * @return Product[]
+     */
     public static function makeBulk(array $data): array
     {
         $products = [];
@@ -60,62 +63,65 @@ class Product
     }
 
 
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function setId($id)
+    public function setId(string $id): self
     {
         $this->id = $id;
         return $this;
     }
 
 
-    public function getProductName()
+    public function getProductName(): ?string
     {
         return $this->name;
     }
 
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->name = $name;
         return $this;
     }
 
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription($description)
+    public function setDescription(string $description): self
     {
         $this->description = $description;
         return $this;
     }
 
-    public function getPrix()
+    public function getPrix(): ?float
     {
         return $this->prix;
     }
 
-    public function setPrix($prix)
+    public function setPrix(float $prix): self
     {
         $this->prix = $prix;
         return $this;
     }
 
-    public function getDateCreation()
+    public function getDateCreation(): ?string
     {
         return $this->date_creation;
     }
 
-    public function setDateCreation($date_creation)
+    public function setDateCreation(string $date_creation): self
     {
         $this->date_creation = $date_creation;
         return $this;
     }
 
+    /**
+     * @return ProductType
+     */
     public function toArray()
     {
         return [
