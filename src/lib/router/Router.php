@@ -13,15 +13,22 @@ use ReflectionClass;
 use ReflectionMethod;
 use Throwable;
 
+/**
+ * @phpstan-type ExtensionType array<'css'|'js'|'svg'|'png'|'jpg'|'jpeg'|'gif'>
+ */
 class Router
 {
     private static string $view_directory_path = "/src/views";                                      // Define the views directory path
     private static string $controllers_directory_path = BASE_DIR . '/src/controllers';              // Define the controllers directory path
     private static string $controllers_namespace = 'App\\Controllers';                              // Define the controllers namespace
-    private static string $assets_directory_path = BASE_DIR . '/public';                            // Define the assets directory path
-    /** @var string[] */
+    private static string $public_directory_path = BASE_DIR . '/public';                            // Define the assets directory path
+    /**
+     * @var ExtensionType 
+     */
     private static $assets_extensions = ['css', 'js', 'svg', 'png', 'jpg', 'jpeg', 'gif'];          // Define the assets extensions
-    /** @var array<string,string> */
+    /**
+     * @var array<key-of<ExtensionType>,string>
+     */
     private static array $assets_mime_types = [
         "js" => "application/javascript",
         "css" => "text/css",
@@ -63,32 +70,38 @@ class Router
     /**
      * Find and serve assets in /public
      */
-    public static function findAsset(string $uri): void
+    public static function findAsset(string $uri, string $extension): bool
     {
-        $uri_extension = pathinfo($uri, PATHINFO_EXTENSION);                            // Get the last part of the request URI
-        $asking_asset = in_array($uri_extension, self::$assets_extensions);             // Check if the request URI has an extension
-        if (!$asking_asset) return;
-        if (isset(self::$assets_mime_types[$uri_extension]))                            // Check if the mime type exists
-            header("Content-Type: " . self::$assets_mime_types[$uri_extension]);        // Set the mime type
-        $file_exist = file_exists(self::$assets_directory_path . $uri);                 // Check if the file exists
-        if (!$file_exist) return;                                                       // If the file does not exist skip
-        include self::$assets_directory_path . $uri;                                    // Include the file
+        header("Debugger-Find-Asset: uri= $uri,extension= $extension");
+        $asking_asset = in_array($extension, self::$assets_extensions);             // Check if the request URI has an extension
+        if (!$asking_asset) return false;
+        if (isset(self::$assets_mime_types[$extension]))                            // Check if the mime type exists
+            header("Content-Type: " . self::$assets_mime_types[$extension]);        // Set the mime type
+        $file_exist = file_exists(self::$public_directory_path . $uri);                 // Check if the file exists
+        if (!$file_exist) return false;                                                       // If the file does not exist skip
+        include self::$public_directory_path . $uri;                                    // Include the file
+        return true;
     }
 
     /**
      * Get and run the controller that matches the request URI
      */
-    public static function findController(string $uri): void
+    public static function findController(string $uri): bool
     {
         $controllers_classes_names = self::getControllerClasses();                                                  // Get the controller classes
-        foreach ($controllers_classes_names as $controller_name) {                                                      // Iterate through each controllers file in the directory
+        foreach ($controllers_classes_names as $controller_name) {
+            /**
+             * @var ReflectionClass<Controller>
+             */
             $reflection_class = new ReflectionClass($controller_name);                                         // Create a reflection class
             $controller_instance = new $controller_name();                                                             // Create a new instance of the class
             $methods = $reflection_class->getMethods(ReflectionMethod::IS_PUBLIC);
             foreach ($methods as $method) {
-                self::processControllerMethod($uri, $controller_instance, $method);
+                $success = self::processControllerMethod($uri, $controller_instance, $method);
+                if ($success) return $success;
             }
         }
+        return false;
     }
 
 
@@ -115,27 +128,31 @@ class Router
         return $classes;
     }
 
-    private static function processControllerMethod(string $uri, object $controller, ReflectionMethod $method): void
+    /**
+     * @return bool
+     */
+    private static function processControllerMethod(string $uri, Controller $controller, ReflectionMethod $method)
     {
         $method_name = $method->getName();
         $route_instance = self::getRouteInstance($method);
-        if (is_null($route_instance) || $uri !== $route_instance->path) return;
+        if (is_null($route_instance) || $uri !== $route_instance->path) return false;
         if (!$route_instance->view) {
             $controller->$method_name();
-            return;
+            return true;
         }
         $view_path = BASE_DIR . self::$view_directory_path . $route_instance->view;
-        if (!file_exists($view_path)) return;
+        if (!file_exists($view_path)) return false;
         $inject_instance = self::getInjectInstance($method);
-        if ($inject_instance) {
-            /**
-             * @var string $content
-             */
-            $content = $controller->$method_name();
-            echo $inject_instance->inject($view_path, $content);
-        } else {
+        if (!$inject_instance) {
             include $view_path;
+            return true;
         }
+        /**
+         * @var string $content
+         */
+        $content = $controller->$method_name();
+        echo $inject_instance->inject($view_path, $content);
+        return true;
     }
 
     /**
