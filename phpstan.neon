@@ -1,0 +1,8 @@
+#lang=yaml
+parameters:
+  bootstrapFiles:
+    - vendor/autoload.php
+    - src/lib/constants.php
+  level: 10
+  paths:
+    - src/lib

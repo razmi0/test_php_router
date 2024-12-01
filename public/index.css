@@ -8,3 +8,10 @@ header {
   align-items: center;
   gap: 1ch;
 }
+.test-css-linked {
+  color: green;
+}
+.box {
+  padding: 1rem;
+  border: 1px solid black;
+}

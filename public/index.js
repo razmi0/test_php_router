@@ -1,3 +1,3 @@
 console.log("Hello from index.js");
-const root = document.getElementById("root");
-root.innerHTML = "<p>Hello from index.js</p>";
+const root = document.querySelector("#js-from-file");
+root.innerHTML = "Hello from index.js";

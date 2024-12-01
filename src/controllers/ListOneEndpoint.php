@@ -2,32 +2,18 @@
 
 namespace App\Controllers;
 
+use App\Lib\Controller;
 use App\Model\Data;
-use App\Router\Route;
-
-
+use App\Lib\Routing\Route;
+use App\Model\ProductRepository;
 
 #[Route('/api/v1.0/produit/listone')]
-class ListOneEndpoint
+class ListOneEndpoint extends Controller
 {
-    public function __construct(
-        private int $id,
-    ) {
-        print_r("hi from ListOneEndpoint");
-    }
 
-    public function get()
+    public function handle(): void
     {
-        $data = new Data();
-        $item = $data->getId($this->id);
-        if ($item === false) {
-            return json_encode(['error' => 'Item not found']);
-        }
-        return json_encode($item);
-    }
-
-    public function __invoke()
-    {
-        echo $this->get();
+        $repository = new ProductRepository();
+        $product = $repository->findOne(1);
     }
 }

@@ -1,4 +1,4 @@
 <?php
 
-define("BASE_DIR", __DIR__);
-require_once BASE_DIR . '/src/router/starter.php';
+require_once 'src/lib/constants.php';
+require_once BASE_DIR . '/src/lib/router/starter.php';

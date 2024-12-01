@@ -2,29 +2,19 @@
 
 namespace App\Controllers;
 
-use App\Router\Route;
-use App\Model\Data;
+use App\Lib\Controller;
+use App\Model\ProductRepository;
+use App\Lib\Routing\Route;
 
 
 #[Route(path: '/api/v1.0/produit/list')]
-class ListEndpoint
+class ListEndpoint  extends Controller
 {
-    public function __construct(
-        private int $limit = 10,
-        private string $sort = 'asc',
-    ) {
-        print_r("hi from ListEndpoint constructor");
-    }
-
-    public function get()
+    private $products;
+    public function handle(): void
     {
-        $data = new Data();
-        $list = $data->get($this->limit, $this->sort);
-        return json_encode($list);
-    }
-
-    public function __invoke()
-    {
-        echo $this->get();
+        $repository = new ProductRepository();
+        $this->products = $repository->findAll();
+        print_r($this->products);
     }
 }

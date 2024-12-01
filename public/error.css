@@ -1,0 +1,63 @@
+body {
+  background-color: #f2f2f2;
+  font-family: Arial, sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 80%;
+  max-width: 800px;
+  margin: 100px auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  text-align: left;
+}
+
+h1 {
+  font-size: 3em;
+  color: #e74c3c;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+p {
+  font-size: 1.2em;
+  margin: 10px 0;
+}
+
+.code,
+.msg,
+.file,
+.trace {
+  font-family: "Courier New", Courier, monospace;
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+.code {
+  color: #c0392b;
+}
+
+.msg {
+  color: #2980b9;
+}
+
+.file {
+  color: #8e44ad;
+}
+
+.trace {
+  color: #27ae60;
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+small {
+  color: #999;
+}
