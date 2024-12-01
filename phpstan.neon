@@ -5,4 +5,4 @@ parameters:
     - src/lib/constants.php
   level: 10
   paths:
-    - src/lib
+    - src
