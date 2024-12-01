@@ -1,17 +1,150 @@
-img {
-  max-height: 1rem;
-  max-width: 1rem;
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1ch;
+
+body {
+  background-color: #121212; /* Dark background */
+  color: #e0e0e0; /* Soft text for readability */
+  font-family: "Arial", sans-serif;
+  line-height: 1.6;
+  padding: 20px;
 }
-.test-css-linked {
-  color: green;
+
+main {
+  max-width: 800px;
+  margin: 0 auto;
 }
+
+article {
+  background: #1e1e1e; /* Slightly lighter than the body */
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+}
+
+h3 {
+  color: #8a2be2; /* Vibrant purple for titles */
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
 .box {
-  padding: 1rem;
-  border: 1px solid black;
+  background: #242424; /* Dark gray box for content */
+  border: 1px solid #3a3a3a; /* Border to define box edges */
+  border-radius: 5px;
+  padding: 15px;
+  font-size: 0.9rem;
+}
+
+.box img {
+  max-width: 100%;
+  border-radius: 5px;
+}
+
+.test-css-linked {
+  color: #32cd32; /* Vibrant green */
+  font-weight: bold;
+}
+
+a {
+  color: #32cd32; /* Vibrant green links */
+  text-decoration: none;
+  border-bottom: 1px dashed #32cd32;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+#home-controller {
+  border: 2px dashed #8a2be2; /* Purple dashed border */
+  padding: 10px;
+  text-align: center;
+  color: #8a2be2; /* Matches theme */
+}
+
+#js-from-file {
+  font-style: italic;
+  color: #32cd32; /* Matches green theme */
+}
+
+.box {
+  text-align: left;
+}
+
+/* Style buttons */
+button {
+  background-color: #892be2d5; /* Purple background */
+  color: #e0e0e0; /* Light text */
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #8a2be2; /* Green hover effect */
+  animation: illumination 2s infinite;
+}
+
+button:active {
+  scale: 0.98; /* Slightly shrink when clicked */
+}
+
+@keyframes illumination {
+  0% {
+    filter: drop-shadow(0 0 3px #8a2be2);
+  }
+  50% {
+    filter: drop-shadow(0 0 7px #8a2be2);
+  }
+  100% {
+    filter: drop-shadow(0 0 3px #8a2be2);
+  }
+}
+
+/* Resize images to fit properly */
+.box img {
+  max-width: 350px; /* Restrict width to container */
+  height: auto; /* Maintain aspect ratio */
+  display: block;
+  margin: 0 auto; /* Center align the image */
+}
+
+.indicator {
+  position: relative;
+  padding: 10px;
+  border: 1px solid #3a3a3a;
+  border-radius: 5px;
+  min-height: 40px; /* Ensures the indicator has some height even if empty */
+}
+
+/* Add green "success" if the .indicator has at least one child */
+.indicator:has(*):after {
+  content: "success";
+  color: #32cd32; /* Vibrant green */
+  font-weight: bold;
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+/* Add red "failed" if the .indicator has no children */
+.indicator:not(:has(*)):after {
+  content: "failed";
+  color: #ff4500; /* Bright red */
+  font-weight: bold;
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
 }
