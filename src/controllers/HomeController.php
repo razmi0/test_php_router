@@ -11,10 +11,7 @@ class HomeController extends Controller
 {
     private int $counter_start = 0;
 
-    #[
-        Inject(target: "home-controller"),
-        Route(path: '/home', view: "/home.php")
-    ]
+    #[Inject(target: "home-controller"), Route(path: '/home', view: "/home.php")]
     public function home(): string
     {
         return (
@@ -24,9 +21,7 @@ class HomeController extends Controller
                 </button>
                 <script type='module'>
                     import { counter } from '/counter.js';
-                    const counterOutput = document.getElementById('counter-output');
-                    const counterButton = document.getElementById('counter');
-                    counterButton.addEventListener('click', ()=> counter(counterOutput));
+                    document.querySelector('#counter').addEventListener('click', counter);
                 </script>
             HTML
         );
