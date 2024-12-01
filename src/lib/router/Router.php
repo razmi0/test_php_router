@@ -7,11 +7,8 @@ namespace App\Lib\Routing;
 use App\Lib\Controller;
 use App\Lib\Injector\Inject;
 use DirectoryIterator;
-use Reflection;
-use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
-use Throwable;
 
 /**
  * @phpstan-type ExtensionType array<'css'|'js'|'svg'|'png'|'jpg'|'jpeg'|'gif'>
