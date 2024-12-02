@@ -1,13 +1,5 @@
 <?php
 
-use DI\ContainerBuilder;
-
-require_once 'vendor/autoload.php';
-require_once 'src/lib/constants.php';
-
-$builder = new ContainerBuilder();
-$builder->addDefinitions('config/definitions.php');
-$container = $builder->build();
-
-// Router
-require_once BASE_DIR . '/src/lib/router/starter.php';
+require_once 'vendor/autoload.php'; // Require the composer autoload
+require_once 'src/lib/constants.php'; // Require the constants
+require_once BASE_DIR . '/src/lib/router/starter.php'; // Start the router

@@ -1,13 +1,19 @@
 <?php
 
 use App\Lib\HTTP\ErrorPage;
+use App\Lib\Middleware;
 use App\Lib\Routing\Router;
 
 require_once BASE_DIR . '/vendor/autoload.php';             // Require the composer autoload
 require_once BASE_DIR . '/src/lib/debug/utils.php';         // Require the debug utilities
+
+
+
+
+
+[$uri_path, $extension] = getUri();                     // Remove query string keeping only the path
 try {
-    [$uri_path, $extension] = getUri();                     // Remove query string keeping only the path
-    Router::addDefaultHeaders();                            // Add default headers
+    Middleware::addDefaultHeaders();                            // Add default headers
     $success = Router::findAsset($uri_path, $extension);    // Find and serve assets
     if ($success) exit();                                   // Exit if asset is found
     $success = Router::findController($uri_path);           // Find and run controllers
