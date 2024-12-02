@@ -8,11 +8,11 @@ use App\Lib\Injector\JS;
 use App\Lib\Routing\Route;
 
 
-class HomeController extends Controller
+class CounterController extends Controller
 {
     private int $counter_start = 0; // not dynamic, js starter value
 
-    #[Route(path: '/home', view: "/counter.php"), ContentInjector(target: "home-controller")]
+    #[Route(path: '/counter', view: "/counter.php"), ContentInjector(target: "counter-controller")]
     public function home(): string
     {
 
@@ -20,12 +20,12 @@ class HomeController extends Controller
             <<<JS
             const button = document.querySelector('#counter');
             const counter_output = document.querySelector('#counter-output');
+            let interval = null;
             const count = () => {
                 counter_output.dataset.value = parseInt(counter_output.dataset.value) + 1;
                 counter_output.textContent = "Counting " + counter_output.dataset.value;
             }
-            let interval = null;
-            button.addEventListener('click', () => {
+            const clock = () => {
                 if(!interval) {
                     interval = setInterval(count, 1000);
                     return;
@@ -33,26 +33,17 @@ class HomeController extends Controller
                 clearInterval(interval);
                 counter_output.textContent = "Stopped at " + counter_output.dataset.value;
                 interval = null;
-            });
+            }
+            button.addEventListener('click', );
         JS
         );
 
         return
-            "<div>" .
-            $this->button($this->counter_start) .
-            $counter
-            .
-            "</div>";
-    }
-
-    private function button(string | int $count): string
-    {
-        return (
             <<<HTML
-                <button id='counter'>
-                    <span id='counter-output' data-value='$count'>0</span>
+            <button id='counter' hx>
+                    <span id='counter-output' data-value='$this->counter_start'>0</span>
                 </button>
-            HTML
-        );
+            $counter
+            HTML;
     }
 }

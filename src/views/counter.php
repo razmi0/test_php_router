@@ -18,7 +18,7 @@
 
     <article>
       <h3>controller->method_attribute->injector->html</h3>
-      <div class="box indicator" id="home-controller"></div>
+      <div class="box indicator" id="counter-controller"></div>
     </article>
 
     <article>
