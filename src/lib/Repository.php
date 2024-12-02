@@ -6,7 +6,7 @@ use PDO;
 
 abstract class Repository
 {
-    protected ?PDO $pdo = null;
+    protected PDO $pdo;
     public function __construct(protected Connection $connection)
     {
         $this->pdo = $this->connection->getPDO();
