@@ -3,6 +3,7 @@
 use App\Lib\HTTP\ErrorPage;
 use App\Lib\Middleware;
 use App\Lib\Routing\Router;
+use App\Lib\Routing\StaticRoute;
 
 require_once BASE_DIR . '/vendor/autoload.php';             // Require the composer autoload
 require_once BASE_DIR . '/src/lib/debug/utils.php';         // Require the debug utilities
@@ -14,7 +15,7 @@ require_once BASE_DIR . '/src/lib/debug/utils.php';         // Require the debug
 [$uri_path, $extension] = getUri();                     // Remove query string keeping only the path
 try {
     Middleware::addDefaultHeaders();                            // Add default headers
-    $success = Router::findAsset($uri_path, $extension);    // Find and serve assets
+    $success = StaticRoute::findAsset($uri_path, $extension);    // Find and serve assets
     if ($success) exit();                                   // Exit if asset is found
     $success = Router::findController($uri_path);           // Find and run controllers
     if ($success) exit();                                   // Exit if controller is found
