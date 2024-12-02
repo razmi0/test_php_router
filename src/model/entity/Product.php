@@ -62,6 +62,33 @@ class Product
         return $products;
     }
 
+    /**
+     * @return ProductType
+     */
+    public function toArray()
+    {
+        return [
+            "id" => $this->id,
+            "name" => $this->name,
+            "description" => $this->description,
+            "prix" => $this->prix,
+            "date_creation" => $this->date_creation
+        ];
+    }
+
+    /**
+     * @param Product[] $products
+     * @return ProductType[]
+     */
+    public static function toArrayBulk($products)
+    {
+        $products_array = [];
+        foreach ($products as $product) {
+            $products_array[] = $product->toArray();
+        }
+        return $products_array;
+    }
+
 
     public function getId(): ?string
     {
@@ -117,19 +144,5 @@ class Product
     {
         $this->date_creation = $date_creation;
         return $this;
-    }
-
-    /**
-     * @return ProductType
-     */
-    public function toArray()
-    {
-        return [
-            "id" => $this->id,
-            "name" => $this->name,
-            "description" => $this->description,
-            "prix" => $this->prix,
-            "date_creation" => $this->date_creation
-        ];
     }
 }
