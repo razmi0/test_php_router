@@ -3,33 +3,55 @@
 namespace App\Controllers;
 
 use App\Lib\Controller;
-use App\Lib\Injector\Inject;
+use App\Lib\Injector\ContentInjector;
+use App\Lib\Injector\JS;
 use App\Lib\Routing\Route;
 
 
 class HomeController extends Controller
 {
-    private int $counter_start = 0;
+    private int $counter_start = 0; // not dynamic, js starter value
 
-    #[Route(path: '/home', view: "/home.php"), Inject(target: "home-controller")]
+    #[Route(path: '/home', view: "/counter.php"), ContentInjector(target: "home-controller")]
     public function home(): string
     {
 
-        $counter = self::createJsClosure(
+        $counter = JS::write(
             <<<JS
+            const button = document.querySelector('#counter');
             const counter_output = document.querySelector('#counter-output');
-            counter_output.textContent = parseInt(counter_output.textContent) + 1;
+            const count = () => {
+                counter_output.dataset.value = parseInt(counter_output.dataset.value) + 1;
+                counter_output.textContent = "Counting " + counter_output.dataset.value;
+            }
+            let interval = null;
+            button.addEventListener('click', () => {
+                if(!interval) {
+                    interval = setInterval(count, 1000);
+                    return;
+                } 
+                clearInterval(interval);
+                counter_output.textContent = "Stopped at " + counter_output.dataset.value;
+                interval = null;
+            });
         JS
         );
 
+        return
+            "<div>" .
+            $this->button($this->counter_start) .
+            $counter
+            .
+            "</div>";
+    }
+
+    private function button(string | int $count): string
+    {
         return (
             <<<HTML
-                <button id='counter'>Counter : 
-                    <span id='counter-output'>$this->counter_start</span>
+                <button id='counter'>
+                    <span id='counter-output' data-value='$count'>0</span>
                 </button>
-                <script>
-                    document.querySelector('#counter').addEventListener('click', $counter);
-                </script>
             HTML
         );
     }

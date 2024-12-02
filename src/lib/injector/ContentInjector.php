@@ -8,10 +8,9 @@ use App\Lib\HTTP\ErrorPage;
 use Attribute;
 use DOMDocument;
 use DOMDocumentFragment;
-use DOMNode;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class Inject
+class ContentInjector
 {
     private ?string $view = null;
     private ?string $content = null;

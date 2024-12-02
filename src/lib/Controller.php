@@ -8,8 +8,14 @@ abstract class Controller implements IController
 {
     public function __construct() {}
 
-    protected static function createJsClosure(string $js): string
+    public static function js(string $js): string
     {
-        return trim("() => {$js}");
+        return trim("
+        <script>
+        (() => { 
+        $js 
+        })();
+        </script>
+        ");
     }
 }

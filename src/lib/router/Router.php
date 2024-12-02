@@ -5,7 +5,7 @@
 namespace App\Lib\Routing;
 
 use App\Lib\Controller;
-use App\Lib\Injector\Inject;
+use App\Lib\Injector\ContentInjector;
 use DirectoryIterator;
 use ReflectionClass;
 use ReflectionMethod;
@@ -162,11 +162,11 @@ class Router
     }
 
     /**
-     * @return Inject|null
+     * @return ContentInjector|null
      */
     private static function getInjectInstance(ReflectionMethod $method)
     {
-        $attributes = $method->getAttributes(Inject::class);
+        $attributes = $method->getAttributes(ContentInjector::class);
         return $attributes[0] ?? null ? $attributes[0]->newInstance() : null;
     }
 }
