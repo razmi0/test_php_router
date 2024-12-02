@@ -6,6 +6,7 @@
       "App\\Controllers\\": "src/controllers",
       "App\\Model\\": "src/model",
       "App\\Model\\Entity\\": "src/model/entity",
+      "App\\Model\\Repository\\": "src/model/repositories",
       "App\\Middleware\\": "src/middleware",
       "App\\Views\\": "src/views",
       "App\\Lib\\": "src/lib",
