@@ -81,11 +81,11 @@ class Router
 
         $view_path = BASE_DIR . self::$view_directory_path . $route_instance->view;
 
-        if (!file_exists($view_path)) return false; // view file does not exist => fail
+        if (!file_exists($view_path)) return false; // view file does not exist => fail later 404
         $inject_instance = self::getAttributeInstance($method, ContentInjector::class);
         if (!$inject_instance) {
             include $view_path;
-            return true; // no injector => success
+            return true; // no injector => success, include the view file
         }
         /**
          * @var string $content
