@@ -3,24 +3,31 @@
 namespace App\Controllers;
 
 use App\Lib\Controller;
-use App\Model\ProductRepository;
+use App\Model\Repository\ProductRepository;
 use App\Lib\Routing\Route;
-use DI\Attribute\Inject;
-
+use App\Model\Entity\Product;
 
 class ProductController extends Controller
 {
     #[Route(path: '/api/v1.0/produit/list')]
-    #[Inject]
     public function list(ProductRepository $repository): mixed
     {
-        return json_encode($repository->findAll());
+        header('Content-Type: application/json');
+        $products = $repository->findAll();
+        if (!$products) {
+            return json_encode([]);
+        }
+        return json_encode(Product::toArrayBulk($products));
     }
 
     #[Route('/api/v1.0/produit/listone')]
-    #[Inject]
     public function listOne(ProductRepository $repository): mixed
     {
-        return json_encode($repository->findOne((string)1));
+        header('Content-Type: application/json');
+        $product = $repository->findOne("1");
+        if (!$product) {
+            return json_encode([]);
+        }
+        return json_encode($product->toArray());
     }
 }
