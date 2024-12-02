@@ -6,79 +6,15 @@ namespace App\Lib\Routing;
 
 use App\Lib\Controller;
 use App\Lib\Injector\ContentInjector;
-use DirectoryIterator;
-use ReflectionClass;
-use ReflectionMethod;
 
 /**
- * @phpstan-type ExtensionType array<'css'|'js'|'svg'|'png'|'jpg'|'jpeg'|'gif'>
+ * @template Dep
  */
 class Router
 {
     private static string $view_directory_path = "/src/views";                                      // Define the views directory path
     private static string $controllers_directory_path = BASE_DIR . '/src/controllers';              // Define the controllers directory path
     private static string $controllers_namespace = 'App\\Controllers';                              // Define the controllers namespace
-    private static string $public_directory_path = BASE_DIR . '/public';                            // Define the assets directory path
-    /**
-     * @var ExtensionType 
-     */
-    private static $assets_extensions = ['css', 'js', 'svg', 'png', 'jpg', 'jpeg', 'gif'];          // Define the assets extensions
-    /**
-     * @var array<key-of<ExtensionType>,string>
-     */
-    private static array $assets_mime_types = [
-        "js" => "application/javascript",
-        "css" => "text/css",
-        "svg" => "image/svg+xml",
-        "png" => "image/png",
-        "jpg" => "image/jpeg",
-        "jpeg" => "image/jpeg",
-        "gif" => "image/gif",
-    ];                                                                                      // Define the assets mime types
-
-    // should be in a middleware
-    public static function addDefaultHeaders(): void
-    {
-        header("Access-Control-Allow-Origin: *");                                                   // Allow all origins
-        header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");                    // Allow the following methods
-        header(
-            "Content-Security-Policy: "
-                . "default-src 'self' "
-                . "; object-src 'none' "
-                . "; img-src 'self' "
-                . "; media-src 'none' "
-                . "; frame-src 'none' "
-                . "; font-src 'self' "
-                . "; connect-src 'self' "
-                . "; style-src 'self' "
-                . "; script-src 'self' 'unsafe-inline' "
-                . "; base-uri 'none' "
-                . "; form-action 'self' "
-                . "; frame-ancestors 'none' "
-            // . "; require-trusted-types-for 'script' ;"                                          // Prevent innerHTML injections 
-        );                                                                                          // Prevent XSS
-        header("X-Content-Type-Options: nosniff");                                                  // Prevent MIME type sniffing
-        header("Referrer-Policy: no-referrer");                                                     // Prevent referrer leakage
-        header("Feature-Policy: geolocation 'none'");                                               // Prevent feature abuse
-        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");                    // Prevent caching
-        header("Access-Control-Allow-Headers: Content-Type, Authorization");                        // Allow the following headers
-    }
-
-    /**
-     * Find and serve assets in /public
-     */
-    public static function findAsset(string $uri, string $extension): bool
-    {
-        header("Debugger-Find-Asset: uri= $uri,extension= $extension");
-        $asking_asset = in_array($extension, self::$assets_extensions);             // Check if the request URI has an extension
-        if (!$asking_asset) return false;
-        if (isset(self::$assets_mime_types[$extension]))                            // Check if the mime type exists
-            header("Content-Type: " . self::$assets_mime_types[$extension]);        // Set the mime type
-        $file_exist = file_exists(self::$public_directory_path . $uri);                 // Check if the file exists
-        if (!$file_exist) return false;                                                       // If the file does not exist skip
-        include self::$public_directory_path . $uri;                                    // Include the file
-        return true;
-    }
 
     /**
      * Get and run the controller that matches the request URI
@@ -88,13 +24,13 @@ class Router
         $controllers_classes_names = self::getControllerClasses();                                                  // Get the controller classes
         foreach ($controllers_classes_names as $controller_name) {
             /**
-             * @var ReflectionClass<Controller>
+             * @var \ReflectionClass<Controller>
              */
-            $reflection_class = new ReflectionClass($controller_name);                                         // Create a reflection class
+            $reflection_class = new \ReflectionClass($controller_name);                                         // Create a reflection class
             $controller_instance = new $controller_name();                                                             // Create a new instance of the class
-            $methods = $reflection_class->getMethods(ReflectionMethod::IS_PUBLIC);
-            foreach ($methods as $method) {
-                $success = self::processControllerMethod($uri, $controller_instance, $method);
+            $methods = $reflection_class->getMethods(\ReflectionMethod::IS_PUBLIC);                          // Get the public methods
+            foreach ($methods as $method) {                                                                            // Loop through the methods
+                $success = self::processControllerMethod($uri, $controller_instance, $method);         // Process the method
                 if ($success) return $success;
             }
         }
@@ -103,13 +39,14 @@ class Router
 
 
     /**
+     * scan the controllers directory and return the classes
      * @return class-string<Controller>[]
      */
     private static function getControllerClasses()
     {
 
         $classes = [];
-        $iterator = new DirectoryIterator(self::$controllers_directory_path);
+        $iterator = new \DirectoryIterator(self::$controllers_directory_path);
 
         foreach ($iterator as $file) {
             if ($file->isDot() || $file->getExtension() !== 'php') {
@@ -126,47 +63,74 @@ class Router
     }
 
     /**
+     * return false if route does not match & if file does not exist
+     * return true if method is executed with DI 
      * @return bool
      */
-    private static function processControllerMethod(string $uri, Controller $controller, ReflectionMethod $method)
+    private static function processControllerMethod(string $uri, Controller $controller, \ReflectionMethod $method)
     {
-        $method_name = $method->getName();
-        $route_instance = self::getRouteInstance($method);
-        if (is_null($route_instance) || $uri !== $route_instance->path) return false;
-        if (!$route_instance->view) {
-            $controller->$method_name();
+        $route_instance = self::getAttributeInstance($method, Route::class);
+        if (is_null($route_instance) || $uri !== $route_instance->path) return false; // no route or route::path does not match uri => fail
+
+
+        if (!$route_instance->view) {   // no view => success
+            $content = self::execute($controller, $method);
+            if (is_string($content)) echo $content;
             return true;
         }
+
         $view_path = BASE_DIR . self::$view_directory_path . $route_instance->view;
-        if (!file_exists($view_path)) return false;
-        $inject_instance = self::getInjectInstance($method);
+
+        if (!file_exists($view_path)) return false; // view file does not exist => fail
+        $inject_instance = self::getAttributeInstance($method, ContentInjector::class);
         if (!$inject_instance) {
             include $view_path;
-            return true;
+            return true; // no injector => success
         }
         /**
          * @var string $content
          */
-        $content = $controller->$method_name();
+        $content = self::execute($controller, $method);
         echo $inject_instance->inject($view_path, $content);
         return true;
     }
 
-    /**
-     * @return Route|null
-     */
-    private static function getRouteInstance(ReflectionMethod $method)
+    private static function execute(Controller $controller, \ReflectionMethod $method): mixed
     {
-        $attributes = $method->getAttributes(Route::class);
-        return $attributes[0] ?? null ? $attributes[0]->newInstance() : null;
+        $method_name = $method->getName();
+        /** @var Dep[] */
+        $deps = self::getDependencies($method);
+        return $controller->$method_name(...$deps);
     }
 
     /**
-     * @return ContentInjector|null
+     * @return Dep[]
      */
-    private static function getInjectInstance(ReflectionMethod $method)
+    private static function getDependencies(\ReflectionMethod $method)
     {
-        $attributes = $method->getAttributes(ContentInjector::class);
+        /**
+         * @var \ReflectionParameter[]
+         */
+        $params_refs = $method->getParameters();
+        $dependencies = [];
+        foreach ($params_refs as $param_ref) {
+            $param_type = $param_ref->getType();
+            if ($param_type && $param_type instanceof \ReflectionNamedType) {
+                $dependencies[] = CONTAINER->get($param_type->getName());
+            }
+        }
+        return $dependencies;
+    }
+
+    /**
+     * Creates a new instance of the attribute with passed arguments
+     * @template T of object
+     * @param class-string<T> $attributeClass
+     * @return T|null
+     */
+    private static function getAttributeInstance(\ReflectionMethod $method, string $attributeClass)
+    {
+        $attributes = $method->getAttributes($attributeClass);
         return $attributes[0] ?? null ? $attributes[0]->newInstance() : null;
     }
 }
