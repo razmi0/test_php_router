@@ -12,8 +12,8 @@ class CounterController extends Controller
 {
     private int $counter_start = 0; // not dynamic, js starter value
 
-    #[Route(path: '/counter', view: "/counter.php"), ContentInjector(target: "counter-controller")]
-    public function home(): string
+    #[Route(path: '/', view: "/counter.php"), ContentInjector(target: "counter-controller")]
+    public function counter(): string
     {
 
         $counter = JS::write(
@@ -34,13 +34,13 @@ class CounterController extends Controller
                 counter_output.textContent = "Stopped at " + counter_output.dataset.value;
                 interval = null;
             }
-            button.addEventListener('click', );
+            button.addEventListener('click', clock);
         JS
         );
 
         return
             <<<HTML
-            <button id='counter' hx>
+            <button id='counter'>
                     <span id='counter-output' data-value='$this->counter_start'>0</span>
                 </button>
             $counter
