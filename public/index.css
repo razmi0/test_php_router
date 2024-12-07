@@ -14,11 +14,18 @@ body {
 }
 
 main {
-  max-width: 800px;
+  max-width: 980px;
   margin: 0 auto;
 }
 
 article {
+  position: relative;
+
+  display: inline-flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: min-content;
+  height: 35%;
   background: #1e1e1e; /* Slightly lighter than the body */
   border-radius: 8px;
   padding: 20px;
@@ -30,6 +37,7 @@ h3 {
   color: #8a2be2; /* Vibrant purple for titles */
   font-weight: bold;
   margin-bottom: 10px;
+  font-size: 1rem;
 }
 
 .box {
@@ -38,11 +46,7 @@ h3 {
   border-radius: 5px;
   padding: 15px;
   font-size: 0.9rem;
-}
-
-.box img {
-  max-width: 100%;
-  border-radius: 5px;
+  text-align: left;
 }
 
 .test-css-linked {
@@ -60,7 +64,7 @@ a:hover {
   text-decoration: underline;
 }
 
-#home-controller {
+#counter-controller {
   border: 2px dashed #8a2be2; /* Purple dashed border */
   padding: 10px;
   text-align: center;
@@ -70,10 +74,6 @@ a:hover {
 #js-from-file {
   font-style: italic;
   color: #32cd32; /* Matches green theme */
-}
-
-.box {
-  text-align: left;
 }
 
 /* Style buttons */
@@ -113,14 +113,14 @@ button:active {
 
 /* Resize images to fit properly */
 .box img {
-  max-width: 350px; /* Restrict width to container */
+  max-width: 70px; /* Restrict width to container */
   height: auto; /* Maintain aspect ratio */
   display: block;
   margin: 0 auto; /* Center align the image */
+  border-radius: 5px;
 }
 
 .indicator {
-  position: relative;
   padding: 10px;
   border: 1px solid #3a3a3a;
   border-radius: 5px;
@@ -133,9 +133,9 @@ button:active {
   color: #32cd32; /* Vibrant green */
   font-weight: bold;
   position: absolute;
-  top: 50%;
+  top: 0px;
   right: 10px;
-  transform: translateY(-50%);
+  transform: translateY(2%);
 }
 
 /* Add red "failed" if the .indicator has no children */
@@ -144,7 +144,7 @@ button:active {
   color: #ff4500; /* Bright red */
   font-weight: bold;
   position: absolute;
-  top: 50%;
+  top: 0px;
   right: 10px;
-  transform: translateY(-50%);
+  transform: translateY(2%);
 }
