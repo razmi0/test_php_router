@@ -1,6 +1,5 @@
 <?php
 
-
 use DI\ContainerBuilder;
 
 /**
@@ -16,3 +15,8 @@ $container = $builder->build();
  * @global Container $container The DI container
  */
 define('CONTAINER', $container);
+
+
+
+
+require_once BASE_DIR . '/src/lib/debug/utils.php';          // Require the debug utilities

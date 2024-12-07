@@ -12,7 +12,7 @@ class CounterController extends Controller
 {
     private int $counter_start = 0; // not dynamic, js starter value
 
-    #[Route(path: '/', view: "/counter.php"), ContentInjector(target: "counter-controller")]
+    #[Route(path: '/monitoring', view: "/counter.php"), ContentInjector(target: "counter-controller")]
     public function counter(): string
     {
 

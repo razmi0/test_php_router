@@ -3,6 +3,7 @@ parameters:
   bootstrapFiles:
     - vendor/autoload.php
     - src/lib/constants.php
+    - src/lib/starter.php
   level: 9
   paths:
     - src

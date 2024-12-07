@@ -1,5 +1,7 @@
 <?php
 
-require_once 'vendor/autoload.php'; // Require the composer autoload
-require_once 'src/lib/constants.php'; // Require the constants
-require_once BASE_DIR . '/src/lib/router/starter.php'; // Start the router
+use App\Lib\Router\Routing;
+
+require_once __DIR__ . "/vendor/autoload.php";    // Require the constants
+require_once __DIR__ . "/src/lib/bootstrap.php";    // Require the bootstrap
+Routing::start();                                   // Start the application
