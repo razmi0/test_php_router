@@ -108,9 +108,13 @@ class Request extends AbsRequest implements IRequest
         parse_str($_SERVER["QUERY_STRING"], $this->query_params);                  // Parse query string
         $this->has_query = !empty($this->query_params);                            // Check if has query
 
-        isset($_SERVER["CONTENT_TYPE"])
-            ? $this->parseRequestBody()
-            : Error::HTTP415("Please provide a Content-Type header : application/x-www-form-urlencoded OR application/json OR text/html");
+        $ask_some_html = $this->request_method === "GET" && str_contains($this->headers["Accept"], "text/html");                 // Check if it is an HTML request with a GET method
+
+        if (!$ask_some_html) {
+            isset($_SERVER["CONTENT_TYPE"])
+                ? $this->parseRequestBody()
+                : Error::HTTP415("Please provide a Content-Type header : application/x-www-form-urlencoded OR application/json OR text/html");
+        }
     }
 
     private function parseRequestBody(): void
