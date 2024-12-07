@@ -10,33 +10,35 @@
 </head>
 
 <body>
+  <style id="indicator-tag"></style>
   <main>
     <article>
-      <h3>controller->method_attribute->route->view</h3>
-      <p class="box ">from view file referenced by #[Route(path: '/home', view: "/home.php")] and Router::findController: home.php</p>
+      <h3>controller / method_attribute / route / view</h3>
+      <p class="box indicator">
+        <span>Controller works</span>
+      </p>
     </article>
 
     <article>
-      <h3>controller->method_attribute->injector->html</h3>
+      <h3>controller / method_attribute / ContentInjector</h3>
       <div class="box indicator" id="counter-controller"></div>
     </article>
 
     <article>
-      <h3>router::findAsset->asset(css)</h3>
-      <p class="box">
-        <span class="test-css-linked">href="/index.css"</span>
+      <h3>router::findAsset / asset(css)</h3>
+      <p class="box indicator" id="test-asset-linked">
       </p>
     </article>
 
     <article>
-      <h3>router::findAsset->asset(img/png)</h3>
-      <p class="box">
-        <img src="/assets/alien_image.png" alt="image" />
+      <h3>router::findAsset / asset(img/png)</h3>
+      <p class="box indicator">
+        <img id="test-img-linked" src="/assets/alien_image.png" alt="image" />
       </p>
     </article>
 
     <article>
-      <h3>router::findAsset->asset(js)</h3>
+      <h3>router::findAsset / asset(js)</h3>
       <p class="box indicator" id="js-from-file"></p>
     </article>
 
