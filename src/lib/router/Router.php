@@ -9,6 +9,7 @@ use App\Lib\Injector\ContentInjector;
 
 /**
  * @template Dep
+ * @template ControllerArguments
  */
 class Router
 {
@@ -27,7 +28,8 @@ class Router
              * @var \ReflectionClass<Controller>
              */
             $reflection_class = new \ReflectionClass($controller_name);                                         // Create a reflection class
-            $controller_instance = new $controller_name();                                                             // Create a new instance of the class
+            $controller_arguments = self::getControllerArguments($reflection_class);
+            $controller_instance = new $controller_name(...$controller_arguments);                                                             // Create a new instance of the class
             $methods = $reflection_class->getMethods(\ReflectionMethod::IS_PUBLIC);                          // Get the public methods
             foreach ($methods as $method) {                                                                            // Loop through the methods
                 $success = self::processControllerMethod($uri, $controller_instance, $method);         // Process the method
@@ -62,6 +64,26 @@ class Router
         return $classes;
     }
 
+
+    /**
+     * @param \ReflectionClass<Controller> $controller
+     * @return ControllerArguments[]
+     */
+    private static function getControllerArguments(\ReflectionClass $controller)
+    {
+        $constructor = $controller->getConstructor();
+        if (!$constructor) return [];
+        $params = $constructor->getParameters();
+        $args = [];
+        foreach ($params as $param) {
+            $param_type = $param->getType();
+            if ($param_type && $param_type instanceof \ReflectionNamedType) {
+                $args[] = CONTAINER->get($param_type->getName());
+            }
+        }
+        return $args;
+    }
+
     /**
      * return false if route does not match & if file does not exist
      * return true if method is executed with DI 
@@ -71,7 +93,6 @@ class Router
     {
         $route_instance = self::getAttributeInstance($method, Route::class);
         if (is_null($route_instance) || $uri !== $route_instance->path) return false; // no route or route::path does not match uri => fail
-
 
         if (!$route_instance->view) {   // no view => success
             $content = self::execute($controller, $method);
@@ -98,15 +119,17 @@ class Router
     private static function execute(Controller $controller, \ReflectionMethod $method): mixed
     {
         $method_name = $method->getName();
+
         /** @var Dep[] */
-        $deps = self::getDependencies($method);
+        $deps = self::getMethodDependencies($method);
         return $controller->$method_name(...$deps);
     }
+
 
     /**
      * @return Dep[]
      */
-    private static function getDependencies(\ReflectionMethod $method)
+    private static function getMethodDependencies(\ReflectionMethod $method)
     {
         /**
          * @var \ReflectionParameter[]
