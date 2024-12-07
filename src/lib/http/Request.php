@@ -17,6 +17,7 @@ interface IRequest
     public function getHasQuery(): bool;
     public function getHasFormData(): bool;
     public function getHeader(string $key): string|false;
+    public static function getInstance(): self;
 }
 
 /**

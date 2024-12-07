@@ -24,6 +24,7 @@ interface IResponse
     public function setMethods(array $methods): self;
     public function setAge(int $age): self;
     public function send(): void;
+    public static function getInstance(): self;
 }
 
 
