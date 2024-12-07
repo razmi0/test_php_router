@@ -10,7 +10,10 @@
       "App\\Middleware\\": "src/middleware",
       "App\\Views\\": "src/views",
       "App\\Lib\\": "src/lib",
-      "App\\Lib\\HTTP\\": "src/lib/error",
+      "App\\Lib\\HTTP\\": [
+        "src/lib/error",
+        "src/lib/http"
+      ],
       "App\\Lib\\Routing\\": "src/lib/router",
       "App\\Lib\\Interfaces\\": "src/lib/interfaces",
       "App\\Lib\\Injector\\": "src/lib/injector"
@@ -19,6 +22,9 @@
   "scripts": {
     "analyse": [
       "vendor/bin/phpstan analyse -c phpstan.neon"
+    ],
+    "dev": [
+      "php -S localhost:8080 index.php"
     ]
   },
   "authors": [
@@ -33,5 +39,8 @@
   },
   "require-dev": {
     "phpstan/phpstan": "^2.0"
+  },
+  "config": {
+    "process-timeout": 3600
   }
 }
