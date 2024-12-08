@@ -1,6 +1,6 @@
 <?php
 
-namespace API\Controllers;
+namespace App\Controllers;
 
 use App\Lib\Controller;
 use App\Lib\HTTP\Error;
@@ -23,6 +23,13 @@ class AuthController extends Controller
     ];
 
     #[Route(path: "/signup", view: "signup.php")]
+    public function signupView(): void
+    {
+        $this->middleware
+            ->checkAllowedMethods(["GET"]);
+    }
+
+    #[Route(path: "/signup-submit")]
     public function signup(UserRepository $user_repository)
     {
         $this->middleware
@@ -52,7 +59,15 @@ class AuthController extends Controller
             ->send();
     }
 
-    #[Route(path: "/login", view: "login.php")]
+    #[Route(path: "/login", view: "/login.php")]
+    public function loginView(): void
+    {
+        $this->middleware
+            ->checkAllowedMethods(["GET"]);
+    }
+
+
+    #[Route(path: "/login-submit")]
     public function login(UserRepository $user_repository, TokenRepository $token_repository): void
     {
         $this->middleware
