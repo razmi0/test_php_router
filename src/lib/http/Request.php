@@ -104,8 +104,9 @@ class Request extends AbsRequest implements IRequest
         $this->cookies = $_COOKIE;                                                 // Get all cookies
         $this->client_raw_json = file_get_contents("php://input");                  // Get raw input
         $this->has_data = !!$this->client_raw_json;                                 // Check if has data
-        // @phpstan-ignore-next-line
-        parse_str($_SERVER["QUERY_STRING"], $this->query_params);                  // Parse query string
+        if (isset($_SERVER["QUERY_STRING"]))
+            // @phpstan-ignore-next-line
+            parse_str($_SERVER["QUERY_STRING"], $this->query_params);                  // Parse query string
         $this->has_query = !empty($this->query_params);                            // Check if has query
 
         $ask_some_html = $this->request_method === "GET" && str_contains($this->headers["Accept"], "text/html");                 // Check if it is an HTML request with a GET method

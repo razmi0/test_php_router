@@ -11,10 +11,7 @@ interface IResponse
 {
     public function setCode(int $code): self;
     public function setMessage(string $message): self;
-    /**
-     * @param PayloadType $data
-     */
-    public function setPayload(array $data): self;
+    public function setPayload(mixed $data): self;
     public function setError(string $error): self;
     public function setContentType(string $content_type): self;
     public function setOrigin(string $origin): self;

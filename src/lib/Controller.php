@@ -8,7 +8,7 @@ use App\Lib\HTTP\Response;
 
 abstract class Controller implements IController
 {
-    public function __construct(protected Request $request, protected Response $response) {}
+    public function __construct(protected Request $request, protected Response $response, protected Middleware $middleware) {}
 
     public static function js(string $js): string
     {
