@@ -62,23 +62,26 @@ export const dom = {
     input: deleteSection.querySelector("input"),
   },
 };
-// We extract all the elements grouped by their section ( here delete, readOne)
-const { deleteOne, readOne, create } = dom;
-// Data submissions are disabled if the input is empty
-// This function toggles the disabled attribute if input has a value
-const toggleDisabled = (btn, input) => {
-  input.value.length > 0 ? btn.removeAttribute("disabled") : btn.setAttribute("disabled", "");
-};
-// in delete and readOne sections, if the input has a value, we can submit with the button and send the request
-deleteOne.input.addEventListener("input", () => toggleDisabled(deleteOne.btn, deleteOne.input));
-readOne.input.addEventListener("input", () => toggleDisabled(readOne.btn, readOne.input));
-// in create section, we check if all inputs have a value to enable the submit button
-create.inputs.forEach((input) => {
-  input.addEventListener("input", () => {
-    const isFormValid = create.inputs.every((input) => input.value.length > 0);
-    isFormValid ? create.btn.removeAttribute("disabled") : create.btn.setAttribute("disabled", "");
+export const initializeFormControls = () => {
+  // We extract all the elements grouped by their section ( here delete, readOne)
+  const { deleteOne, readOne, create } = dom;
+  // Data submissions are disabled if the input is empty
+  // This function toggles the disabled attribute if input has a value
+  const toggleDisabled = (btn, input) => {
+    input.value.length > 0 ? btn.removeAttribute("disabled") : btn.setAttribute("disabled", "");
+  };
+  // in delete and readOne sections, if the input has a value, we can submit with the button and send the request
+  deleteOne.input.addEventListener("input", () => toggleDisabled(deleteOne.btn, deleteOne.input));
+  readOne.input.addEventListener("input", () => toggleDisabled(readOne.btn, readOne.input));
+  // in create section, we check if all inputs have a value to enable the submit button
+  create.inputs.forEach((input) => {
+    input.addEventListener("input", () => {
+      const isFormValid = create.inputs.every((input) => input.value.length > 0);
+      isFormValid ? create.btn.removeAttribute("disabled") : create.btn.setAttribute("disabled", "");
+    });
   });
-});
+};
+
 /**
  * it is a vanilla and simple <FormControl> React like component
  * **/
@@ -86,18 +89,19 @@ export const displayMessage = ({ ctn, text, code = null, error = false, classLis
   console.log(text, error);
   const prefix = error ? "[ERROR] : " : "";
   const suffix = code ? `-- Code ${code}` : "";
-  const className = error ? "pico-color-red-500" : "";
+  const className = error ? "pico-color-red-550" : "";
 
-  setTimeout(() => {
-    ctn.innerHTML = "";
-  }, 5000);
+  if (error) showToast(text, "error");
+  if (!error) showToast(text, "success");
 
-  ctn.innerHTML = `
-          <div>
-          <progress />
-              <article class="${className + " " + classList}">${prefix} ${text} ${suffix}</article>
-          </div>
+  // Create a container for the message and the delete button
+  const messageContainer = document.createElement("div");
+  messageContainer.innerHTML = `
+          <article class="${className + " " + classList}">${prefix} ${text} ${suffix}</article>
       `;
+
+  // Append the message container to the ctn
+  ctn.appendChild(messageContainer);
 };
 /**
  *insert a table to display the products given data and a container
@@ -146,4 +150,14 @@ export const insertIdsUpdate = (ctn, ids) => {
   });
   ctn.append(...buttons);
   return buttons;
+};
+
+const showToast = (message, type = "success") => {
+  const toast = document.createElement("div");
+  toast.classList.add("toast", type);
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.remove();
+  }, 5000);
 };

@@ -5,7 +5,6 @@
 }
 
 body {
-  background-color: #121212;
   color: #e0e0e0;
   font-family: "Arial", sans-serif;
   line-height: 1.6;
@@ -26,7 +25,6 @@ article {
   flex-wrap: wrap;
   width: 100%;
   height: 35%;
-  background: #1e1e1e; /* Slightly lighter than the body */
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
@@ -34,7 +32,7 @@ article {
 }
 
 h3 {
-  color: #8a2be2; /* Vibrant purple for titles */
+  color: var(--pico-primary); /* Vibrant purple for titles */
   font-weight: bold;
   margin-bottom: 10px;
   font-size: 1rem;
@@ -59,10 +57,10 @@ a:hover {
 }
 
 #counter-controller {
-  border: 2px dashed #8a2be2; /* Purple dashed border */
+  border: 2px dashed var(--pico-primary); /* Purple dashed border */
   padding: 10px;
   text-align: center;
-  color: #8a2be2; /* Matches theme */
+  color: var(--pico-primary); /* Matches theme */
 }
 
 #js-from-file {
@@ -85,7 +83,8 @@ button {
 }
 
 button:hover {
-  background-color: #8a2be2; /* Green hover effect */
+  background-color: var(--pico-primary); /* Green hover effect */
+  border: 1px solid var(--pico-primary);
   transition: all 0.3s ease;
   scale: 1.05; /* Slightly grow when hovered */
 }
@@ -227,19 +226,6 @@ div[data-ids] {
   }
 }
 
-.neon {
-  translate: 0px 500px;
-  height: 300px;
-  position: fixed;
-  rotate: 270deg;
-  text-orientation: sideways-right;
-  background-color: greenyellow;
-  filter: drop-shadow(0 0 0.5rem greenyellow);
-  width: 1000px;
-  margin: 0;
-  padding: 0;
-}
-
 .form-container {
   width: auto;
 }
@@ -256,4 +242,43 @@ div[data-ids] {
 }
 .submit-button {
   margin: 0;
+}
+
+.toast {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  padding: 0.5rem;
+  color: white;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  animation: fadeInOut 5s ease both;
+}
+
+.toast.success {
+  background-color: var(--pico-color-green-550);
+}
+
+.toast.error {
+  background-color: var(--pico-color-red-650);
+}
+
+/* Fade Animation */
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 }

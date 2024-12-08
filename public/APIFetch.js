@@ -1,4 +1,4 @@
-import { displayMessage, displayProduits, dom, insertIdsUpdate } from "./helpers/dom.js";
+import { displayMessage, displayProduits, dom, insertIdsUpdate, initializeFormControls } from "./helpers/dom.js";
 import * as APIFetch from "./helpers/fetch_functions.js";
 import { themeSetup } from "./helpers/theme-toggle.js";
 console.log("Starting the app...");
@@ -42,8 +42,9 @@ const getProduits = () => {
  */
 const getProduit = () => {
   console.log("Setting up read one logic...");
-  const { btn, input, output, section } = dom.readOne;
+  const { btn, input, output } = dom.readOne;
   btn.addEventListener("mousedown", async (e) => {
+    output.innerHTML = "";
     e.preventDefault();
     console.log("Fetching data...");
     const id = input.value;
@@ -53,8 +54,11 @@ const getProduit = () => {
     }
     const [json, response] = await APIFetch.fetchReadOne({ id });
     console.log(response.status, json);
-    if (json.error) displayMessage({ ctn: output, text: json.error, code: response.status, error: true });
-    if (json.message) displayMessage({ ctn: output, text: json.message, code: response.status });
+    if (response.status === 404) {
+      displayMessage({ ctn: output, text: json.error, code: response.status, error: true });
+    } else {
+      displayMessage({ ctn: output, text: json.message, code: response.status, error: false });
+    }
     if (json.data) {
       const { product } = json.data;
       // displayProduits expects an array of products
@@ -151,12 +155,19 @@ const updateProduit = async () => {
         const { product } = json.data;
         // create an id input to store the current id
         const idInput = document.createElement("input");
-        // idInput.type = "hidden";
+        const feedback = document.createElement("span");
+        feedback.innerHTML = `Vous éditez le produit avec l'id : ${product.id}`;
+        idInput.type = "hidden";
         idInput.name = "id";
+        feedback.id = "feedback";
+        feedback.style.marginInlineStart = "10px";
         idInput.disabled = true;
         idInput.value = product.id;
         inputs.push(idInput);
         // append the id input to the form ( will be used to send the update request and is hidden )
+        dom.update.section.querySelectorAll("input[name='id']").forEach((input) => input.remove());
+        dom.update.section.querySelectorAll("span#feedback").forEach((div) => div.remove());
+        dom.update.section.appendChild(feedback);
         dom.update.section.appendChild(idInput);
         // fill the update section inputs with the product data
         inputs.forEach((input) => {
@@ -188,6 +199,7 @@ const updateProduit = async () => {
  *
  */
 const run = () => {
+  initializeFormControls();
   themeSetup();
   getProduits();
   getProduit();
