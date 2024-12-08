@@ -6,11 +6,11 @@
             </li>
         </ul>
         <ul>
-            <li><a href="/" class="secondary">Test the API</a></li>
+            <li><a href="/" class="secondary"><?php echo ($_SERVER['REQUEST_URI'] == '/' ? '› ' : ''); ?>Test the API</a></li>
             <li>
                 <ul dir="rtl">
-                    <li><a href="login">Log in</a></li>
-                    <li><a href="signup">Sign up</a></li>
+                    <li><a href="/login"><?php echo ($_SERVER['REQUEST_URI'] == '/login' ? '› ' : ''); ?>Log in</a></li>
+                    <li><a href="/signup"><?php echo ($_SERVER['REQUEST_URI'] == '/signup' ? '› ' : ''); ?>Sign up</a></li>
                     <li>
                         <button data-theme class="outline" data-tooltip="Toggle theme" data-placement="left">
                             <img src="/assets/theme-icon.svg" alt="theme">

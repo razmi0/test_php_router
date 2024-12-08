@@ -3,15 +3,15 @@
 
 <head>
     <title>API Product Interface</title>
-    <script src="./js/dist/APIFetch.js" type="module"></script>
+    <script src="/APIFetch.js" type="module"></script>
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.colors.min.css">
     <link
         rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+        href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.lime.min.css">
 
-    <link rel="stylesheet" href="styles/index.css">
+    <link rel="stylesheet" href="index.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="https://img.icons8.com/?size=512w&id=13910&format=png">
 </head>

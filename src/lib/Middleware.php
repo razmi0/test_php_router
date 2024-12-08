@@ -15,22 +15,6 @@ class Middleware
     {
         header("Access-Control-Allow-Origin: *");                                                   // Allow all origins
         header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");                    // Allow the following methods
-        header(
-            "Content-Security-Policy: "
-                . "default-src 'self' "
-                . "; object-src 'none' "
-                . "; img-src 'self' "
-                . "; media-src 'none' "
-                . "; frame-src 'none' "
-                . "; font-src 'self' "
-                . "; connect-src 'self' "
-                . "; style-src 'self' "
-                . "; script-src 'self' 'unsafe-inline' "
-                . "; base-uri 'none' "
-                . "; form-action 'self' "
-                . "; frame-ancestors 'none' "
-            // . "; require-trusted-types-for 'script' ;"                                          // Prevent innerHTML injections 
-        );                                                                                          // Prevent XSS
         header("X-Content-Type-Options: nosniff");                                                  // Prevent MIME type sniffing
         header("Referrer-Policy: no-referrer");                                                     // Prevent referrer leakage
         header("Feature-Policy: geolocation 'none'");                                               // Prevent feature abuse

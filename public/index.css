@@ -1,4 +1,3 @@
-/* General Reset */
 * {
   margin: 0;
   padding: 0;
@@ -6,15 +5,16 @@
 }
 
 body {
-  background-color: #121212; /* Dark background */
-  color: #e0e0e0; /* Soft text for readability */
+  background-color: #121212;
+  color: #e0e0e0;
   font-family: "Arial", sans-serif;
   line-height: 1.6;
   padding: 20px;
 }
 
 main {
-  max-width: 980px;
+  display: flex;
+  flex-direction: column;
   margin: 0 auto;
 }
 
@@ -24,7 +24,7 @@ article {
   display: inline-flex;
   flex-direction: column;
   flex-wrap: wrap;
-  width: min-content;
+  width: 100%;
   height: 35%;
   background: #1e1e1e; /* Slightly lighter than the body */
   border-radius: 8px;
@@ -54,12 +54,6 @@ h3 {
   font-weight: bold;
 }
 
-a {
-  color: #32cd32; /* Vibrant green links */
-  text-decoration: none;
-  border-bottom: 1px dashed #32cd32;
-}
-
 a:hover {
   text-decoration: underline;
 }
@@ -78,7 +72,7 @@ a:hover {
 
 /* Style buttons */
 button {
-  background-color: #892be2d5; /* Purple background */
+  background-color: var(--pico-primary); /* Purple background */
   color: #e0e0e0; /* Light text */
   border: none;
   border-radius: 5px;
@@ -92,23 +86,16 @@ button {
 
 button:hover {
   background-color: #8a2be2; /* Green hover effect */
-  animation: illumination 2s infinite;
+  transition: all 0.3s ease;
+  scale: 1.05; /* Slightly grow when hovered */
 }
 
 button:active {
   scale: 0.98; /* Slightly shrink when clicked */
 }
 
-@keyframes illumination {
-  0% {
-    filter: drop-shadow(0 0 3px #8a2be2);
-  }
-  50% {
-    filter: drop-shadow(0 0 7px #8a2be2);
-  }
-  100% {
-    filter: drop-shadow(0 0 3px #8a2be2);
-  }
+button.ids-button {
+  background-color: var(--pico-primary);
 }
 
 /* Resize images to fit properly */
@@ -147,4 +134,126 @@ button:active {
   top: 0px;
   right: 10px;
   transform: translateY(2%);
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+input:not([name="description"]) {
+  max-width: 50vw;
+}
+
+label:has(~ input[required]) {
+  position: relative;
+  width: fit-content;
+
+  &:after {
+    content: "*";
+    position: absolute;
+    top: 0;
+    right: -1ch;
+    color: red;
+  }
+}
+
+button {
+  max-width: fit-content;
+}
+
+section[data-endpoint] ~ section {
+  max-height: 40vh;
+}
+
+article {
+  position: relative;
+}
+
+#error,
+#message {
+  position: absolute;
+  right: 0;
+  margin-right: 2rem;
+}
+
+#error {
+  bottom: 25%;
+}
+
+#message {
+  bottom: 15%;
+}
+
+pre {
+  max-height: 40vh;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+div[data-ids] {
+  margin-bottom: 1rem;
+  max-height: 20vh;
+
+  button[data-update-ids] {
+    width: fit-content;
+    height: fit-content;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 0.6rem;
+    display: inline-flex;
+    margin-inline: 2px;
+  }
+
+  button[data-update-ids]:has(~ button[data-update-ids]:hover),
+  button[data-update-ids]:hover ~ button[data-update-ids] {
+    scale: 0.95;
+    filter: brightness(0.8);
+  }
+
+  button[data-update-ids]:hover {
+    position: relative;
+    z-index: 50;
+    transform: scale(2);
+    color: white;
+    border-color: white;
+    transition: transform ease-out;
+  }
+}
+
+.neon {
+  translate: 0px 500px;
+  height: 300px;
+  position: fixed;
+  rotate: 270deg;
+  text-orientation: sideways-right;
+  background-color: greenyellow;
+  filter: drop-shadow(0 0 0.5rem greenyellow);
+  width: 1000px;
+  margin: 0;
+  padding: 0;
+}
+
+.form-container {
+  width: auto;
+}
+.signup-form {
+  display: flex;
+  flex-grow: 1;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.input-field {
+  margin: 0;
+  width: auto;
+  flex-grow: 1;
+}
+.submit-button {
+  margin: 0;
 }

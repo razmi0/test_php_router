@@ -22,7 +22,7 @@ class AuthController extends Controller
         "samesite" => "Strict"
     ];
 
-    #[Route(path: "/signup", view: "signup.php")]
+    #[Route(path: "/signup", view: "/signup.php")]
     public function signupView(): void
     {
         $this->middleware
