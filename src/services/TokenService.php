@@ -13,7 +13,7 @@ use Firebase\JWT\JWT;
 class TokenService
 {
 
-    public static function createToken(User $user, int $timestamp, int $exp): Token
+    public static function createToken(User $user, int $timestamp, int $exp, string $secret): Token
     {
         $jwt_payload = [
             "user_id" => $user->getUserId(),
@@ -23,7 +23,7 @@ class TokenService
             "exp" => $timestamp + $exp
         ];
 
-        $signed_jwt = JWT::encode($jwt_payload, $_ENV["TOKEN_GENERATION_KEY"], "HS256");
+        $signed_jwt = JWT::encode($jwt_payload, $secret, "HS256");
 
         return Token::make([
             "jwt_value" => $signed_jwt,
