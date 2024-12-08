@@ -4,13 +4,12 @@ namespace App\Controllers;
 
 use App\Lib\Controller;
 use App\Lib\HTTP\Error;
-use App\Lib\Injector\ContentInjector;
-use App\Lib\Injector\JS;
 use App\Lib\Routing\Route;
 use App\Model\Entity\User;
 use App\Model\Repository\TokenRepository;
 use App\Model\Repository\UserRepository;
 use App\Services\TokenService;
+use Valitron\Validator;
 
 class AuthController extends Controller
 {
@@ -22,6 +21,11 @@ class AuthController extends Controller
         "secure" => true,
         "httponly" => true,
         "samesite" => "Strict"
+    ];
+    const RULES = [
+        "username" => ["required", ["lengthBetween", 3, 50], ["regex", "/^[a-zA-Z0-9]+$/"]],
+        "email" => ["required", "email"],
+        "password" => ["required", ["lengthBetween", 8, 50], ["regex", "/^[a-zA-Z0-9]+$/"]]
     ];
 
     #[Route(path: "/signup", view: "/signup.php")]
@@ -35,27 +39,20 @@ class AuthController extends Controller
             ->sanitizeData(["sanitize" => ["html", "integer", "float"]]);
 
         $client_data = $this->request->getDecodedData();
+
+        [$isValid, $errors] = $this->runValidation(self::RULES, $client_data);                         // Validate client data
+        if (!$isValid) {
+            Error::HTTP400("Données invalides", $errors);
+        }
+
         $client_data["password_hash"] = password_hash($client_data["password"], PASSWORD_DEFAULT);
 
         $user = User::make($client_data);
-        $user_id = $user_repository->create($user);
-
-        if (!$user_id)
-            Error::HTTP500("Erreur lors de la création de l'utilisateur");
-
-        $payload =  [
-            "user" => [
-                "user_id" => $user_id,
-                "username" => $user->getUsername(),
-                "email" => $user->getEmail()
-            ],
-        ];
+        $user_repository->create($user);
 
         $this->response
             ->setCode(303)
-            ->setMessage("Utilisateur créé avec succès")
             ->setLocation("/login")
-            ->setPayload($payload)
             ->send();
     }
 
@@ -77,16 +74,23 @@ class AuthController extends Controller
             ]);
 
         $client_data = $this->request->getDecodedData();                                    // Get client data
+        [$isValid, $errors] = $this->runValidation(self::RULES, $client_data);                         // Validate client data
+        if (!$isValid) {
+            Error::HTTP400("Données invalides", $errors);
+        }
         $user = $user_repository->find("email", $client_data["email"]);                            // Fetch user with dao
+
+        if (!$user) {
+            Error::HTTP401("Identifiants invalides");
+        }
+
         $password_hash = $user->getPasswordHash();
 
         if (!$user || !password_verify($client_data["password"], $password_hash))           // if user not found or password invalid
             Error::HTTP401("Identifiants invalides");
 
-        $timestamp = time();                                                                // Get current timestamp
         $signed_token = TokenService::createToken(
             $user,
-            $timestamp,
             self::EXPIRATION_TOKEN,
             $_ENV["TOKEN_GENERATION_KEY"]
         );
@@ -94,6 +98,7 @@ class AuthController extends Controller
 
         $signed_token->setTokenId($token_id);                                               // Set token id in token object
 
+        $timestamp = time();                                                                // Get current timestamp
         $auth_cookie =                                                                      // Create auth cookie
             [
                 self::AUTH_COOKIE_NAME,
@@ -104,24 +109,13 @@ class AuthController extends Controller
                 ]
             ];
 
-        $payload = [                                                                        // Create payload for response
-            "user" => [
-                "user_id" => $user->getUserId(),
-                "username" => $user->getUsername(),
-                "email" => $user->getEmail(),
-                "token_id" => $signed_token->getTokenId()
-            ]
-        ];
-
         session_start();                                                                    // Start session
         $_SESSION["id"] = $user->getUserId();                                               // Set user in session
 
         $this->response                                                                      // Set auth cookie in response
             ->setCode(303)
-            ->setMessage("Connexion réussie")
             ->setLocation("/")
             ->addCookies($auth_cookie)
-            ->setPayload($payload)                                                           // Set payload in response
             ->send();                                                                        // Send response
     }
 
@@ -145,5 +139,16 @@ class AuthController extends Controller
             ->setMessage("Déconnexion réussie")
             ->setLocation("/login")
             ->send();
+    }
+
+    private static function runValidation(array $rules, mixed $data): array
+    {
+        $validator =  new Validator();
+
+        $validator->mapFieldsRules($rules);
+
+        $validator = $validator->withData($data);
+
+        return [$validator->validate(), $validator->errors()];
     }
 }

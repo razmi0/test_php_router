@@ -14,8 +14,9 @@ use Firebase\JWT\Key;
 class TokenService
 {
 
-    public static function createToken(User $user, int $timestamp, int $exp, string $secret): Token
+    public static function createToken(User $user, int $exp, string $secret): Token
     {
+        $timestamp = time();
         $jwt_payload = [
             "user_id" => $user->getUserId(),
             "username" => $user->getUsername(),

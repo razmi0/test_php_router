@@ -225,6 +225,12 @@ div[data-ids] {
 .form-container {
   width: auto;
 }
+
+#form-control {
+  display: none;
+  margin-bottom: 1rem;
+  color: var(--pico-color-red-550);
+}
 .signup-form {
   display: flex;
   flex-grow: 1;

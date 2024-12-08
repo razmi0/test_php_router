@@ -37,20 +37,17 @@ class UserRepository extends Repository
             $stmt->bindParam(":email", $email);
             $stmt->bindParam(":password_hash", $hash);
 
-            try {
-                $stmt->execute();
-            } catch (\Exception $e) {
-                error_log($e->getMessage());
-                if ($e->getCode() === "23000") {
-                    Error::HTTP400("L'email ou le nom d'utilisateur existe déjà");
-                }
-            }
+
+            $stmt->execute();
             $insertedId = $this->pdo->lastInsertId();
 
             return $insertedId ? (int)$insertedId : false;
         } catch (\Exception $e) {
             error_log($e->getMessage());
-            Error::HTTP500("Erreur interne");
+            if ($e->getCode() === "23000") {
+                Error::HTTP401("Vous avez déjà un compte");
+            }
+            Error::HTTP500("Erreur interne", ["exception" => $e->getMessage()]);
         } finally {
             $this->connection->close();
         }
