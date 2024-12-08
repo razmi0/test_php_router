@@ -1,8 +1,0 @@
-#lang=yaml
-parameters:
-  bootstrapFiles:
-    - vendor/autoload.php
-    - src/lib/bootstrap.php
-  level: 9
-  paths:
-    - src

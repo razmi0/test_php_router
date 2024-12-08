@@ -17,7 +17,6 @@
     <?php include("header.php"); ?>
     <h1>Login</h1>
     <article style="width : auto;">
-
         <form action="/login/submit" method="post" class="signup-form" style="display: flex; flex-grow : 1; gap : 1rem; flex-wrap : wrap;">
             <!-- username -->
             <input type="text" name="username" placeholder="Username" style="margin: 0; width : auto; flex-grow : 1;">
@@ -27,8 +26,6 @@
             <input type="password" name="password" placeholder="Password" style="margin: 0; width : auto; flex-grow : 1;">
             <button type="submit" style="margin: 0;">Login</button>
         </form>
-
-
 </body>
 
 </html>
