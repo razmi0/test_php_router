@@ -1,11 +1,16 @@
 <?php
 
 use DI\ContainerBuilder;
+use Dotenv\Dotenv;
 
 /**
  * @global string BASE_DIR The base directory of the project
  */
 define("BASE_DIR", dirname(dirname(__DIR__))); // 2 levels up
+
+// Load the environment variables
+$dotenv = Dotenv::createImmutable(BASE_DIR, '.env.local');
+$dotenv->load();
 
 $builder = new ContainerBuilder();
 $builder->addDefinitions('config/definitions.php');
