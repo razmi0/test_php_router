@@ -87,4 +87,9 @@ class ContentInjector
         }
         return $html;                                            // Return the modified view content
     }
+
+    /**
+     * take the view file and find <?php include("header.php"); ?> and return the path to the included file
+     */
+    // private function findAnincludedView(string $view): string {}
 }

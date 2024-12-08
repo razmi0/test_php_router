@@ -52,10 +52,6 @@ h3 {
   font-weight: bold;
 }
 
-a:hover {
-  text-decoration: underline;
-}
-
 #counter-controller {
   border: 2px dashed var(--pico-primary); /* Purple dashed border */
   padding: 10px;
@@ -263,22 +259,90 @@ div[data-ids] {
   background-color: var(--pico-color-red-650);
 }
 
-/* Fade Animation */
-@keyframes fadeInOut {
-  0% {
+a:hover {
+  text-decoration: none;
+}
+
+a.nav-link.active {
+  /** Active link styling ( underline dashed) */
+  border-bottom: 1px solid var(--pico-primary);
+  border-radius: 0;
+}
+
+a.nav-link.active::before {
+  content: "› ";
+  font-size: 1.2rem;
+}
+
+main {
+  view-transition-name: main;
+}
+
+header {
+  view-transition-name: header;
+}
+
+h1#header-title {
+  view-transition-name: header-title;
+}
+
+::view-transition-old(main) {
+  animation: 40ms cubic-bezier(0.4, 0, 1, 1) both fade-out, 300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
+}
+
+::view-transition-new(main) {
+  animation: 210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
+    300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
+}
+
+::view-transition-old(header) {
+  animation: 40ms cubic-bezier(0.4, 0, 1, 1) both fade-out, 300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-top;
+}
+
+::view-transition-new(header) {
+  animation: 210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in, 300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-top;
+}
+
+::view-transition-old(header-title) {
+  animation: none;
+}
+
+::view-transition-new(header-title) {
+  animation: none;
+}
+
+@keyframes fade-in {
+  from {
     opacity: 0;
-    transform: translateY(-10px);
   }
-  10% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  90% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
+}
+
+@keyframes fade-out {
+  to {
     opacity: 0;
-    transform: translateY(-10px);
+  }
+}
+
+@keyframes slide-from-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes slide-to-left {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slide-to-top {
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes slide-from-top {
+  from {
+    transform: translateY(-100%);
   }
 }

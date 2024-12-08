@@ -162,6 +162,13 @@ class Response extends AbsResponse implements IResponse
         }
     }
 
+    public function deleteCookie(string $name): self
+    {
+        setcookie($name, "", time() - 3600);
+        array_filter($this->cookies, fn($cookie) => $cookie[0] !== $name);
+        return $this;
+    }
+
     private function applyHeaders(): void
     {
         foreach ($this->header as $key => $value) {

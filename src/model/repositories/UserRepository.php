@@ -21,9 +21,9 @@ class UserRepository extends Repository
      * 
      * @param User $user
      * @throws \Exception
-     * @return int|false $insertedId
+     * @return int|false|array $insertedId
      */
-    public function create(User $user): int|false
+    public function create(User $user): int|false|array
     {
         try {
             $sql = "INSERT INTO T_USER (username, email, password_hash) VALUES (:username, :email, :password_hash)";
@@ -37,7 +37,14 @@ class UserRepository extends Repository
             $stmt->bindParam(":email", $email);
             $stmt->bindParam(":password_hash", $hash);
 
-            $stmt->execute();
+            try {
+                $stmt->execute();
+            } catch (\Exception $e) {
+                error_log($e->getMessage());
+                if ($e->getCode() === "23000") {
+                    Error::HTTP400("L'email ou le nom d'utilisateur existe déjà");
+                }
+            }
             $insertedId = $this->pdo->lastInsertId();
 
             return $insertedId ? (int)$insertedId : false;

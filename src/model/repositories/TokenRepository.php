@@ -84,4 +84,20 @@ class TokenRepository extends Repository
             $this->connection->close();
         }
     }
+
+    public function delete(string $user_id): void
+    {
+        try {
+            $sql = "DELETE FROM T_TOKEN WHERE user_id = :user_id";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(":user_id", $user_id, \PDO::PARAM_INT);
+            $stmt->execute();
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+            Error::HTTP500("Erreur interne");
+        } finally {
+            $this->connection->close();
+        }
+    }
 }

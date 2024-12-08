@@ -1,6 +1,5 @@
 import { displayMessage, displayProduits, dom, insertIdsUpdate, initializeFormControls } from "./helpers/dom.js";
 import * as APIFetch from "./helpers/fetch_functions.js";
-import { themeSetup } from "./helpers/theme-toggle.js";
 console.log("Starting the app...");
 // Je n'ai pas créé de fonction displayProduit car displayProduits est capable de gérer un seul produit à afficher.
 /**
@@ -200,7 +199,6 @@ const updateProduit = async () => {
  */
 const run = () => {
   initializeFormControls();
-  themeSetup();
   getProduits();
   getProduit();
   deleteProduit();

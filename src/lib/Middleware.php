@@ -3,6 +3,7 @@
 namespace App\Lib;
 
 use App\Lib\HTTP\Error;
+use App\Lib\HTTP\ErrorPage;
 use App\Lib\HTTP\Request;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key as JWTKey;

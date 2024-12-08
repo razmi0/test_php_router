@@ -8,7 +8,7 @@ class JS
     public static function write(string $js): string
     {
         return trim("
-        <script>
+        <script type='module'>
         (() => { 
         $js 
         })();

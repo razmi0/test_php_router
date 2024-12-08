@@ -190,10 +190,13 @@ class Request extends AbsRequest implements IRequest
     /**
      * @return string | CookieType | false
      */
-    public function getCookie(string $key): string|false|array
+    public function getCookie(string $key = null): string|false|array
     {
-        if ($key && isset($this->cookies[$key])) {
-            return $this->cookies[$key];
+        if ($key) {
+            if (isset($this->cookies[$key])) {
+                return $this->cookies[$key];
+            }
+            return false;
         }
         return empty($this->cookies) ? false : $this->cookies;
     }

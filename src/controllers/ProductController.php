@@ -20,6 +20,7 @@ class ProductController extends Controller
     {
         $this->middleware
             ->checkAllowedMethods(["GET"])
+            ->checkAuthorization()
             ->sanitizeData(["sanitize" => ["html", "integer", "float"]]);
 
         $products = Product::toArrayBulk($repository->findAll());
@@ -37,6 +38,7 @@ class ProductController extends Controller
     {
         $this->middleware
             ->checkAllowedMethods(["GET"])
+            ->checkAuthorization()
             ->sanitizeData(["sanitize" => ["html", "integer", "float"]]);
 
         /**
@@ -69,6 +71,7 @@ class ProductController extends Controller
     {
         $this->middleware
             ->checkAllowedMethods(["POST"])
+            ->checkAuthorization()
             ->sanitizeData(["sanitize" => ["html", "integer", "float"]]);
 
         if (!$this->request->getHasData()) {
@@ -101,6 +104,7 @@ class ProductController extends Controller
     {
         $this->middleware
             ->checkAllowedMethods(["PUT"])
+            ->checkAuthorization()
             ->sanitizeData(["sanitize" => ["html", "integer", "float"]]);
 
         if (!$this->request->getHasData()) {
@@ -133,6 +137,7 @@ class ProductController extends Controller
     {
         $this->middleware
             ->checkAllowedMethods(["DELETE"])
+            ->checkAuthorization()
             ->sanitizeData(["sanitize" => ["html", "integer", "float"]]);
 
         if (!$this->request->getHasData()) {
