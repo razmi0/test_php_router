@@ -19,6 +19,8 @@
       "email": "thomas.cuesta31@gmail.com"
     }
   ],
+  "version": "1.0.0",
+  "license": "MIT",
   "require": {
     "php-di/php-di": "^7.0",
     "vlucas/phpdotenv": "^5.6"
