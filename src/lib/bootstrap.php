@@ -21,7 +21,4 @@ $container = $builder->build();
  */
 define('CONTAINER', $container);
 
-
-
-
 require_once BASE_DIR . '/src/lib/debug/utils.php';          // Require the debug utilities
