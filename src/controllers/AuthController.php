@@ -11,9 +11,20 @@ use App\Model\Repository\UserRepository;
 use App\Services\TokenService;
 use Valitron\Validator;
 
+/**
+ * Class AuthController
+ * 
+ * - routes : 
+ *      - /signup
+ *      - /signup/submit
+ *      - /login
+ *      - /login/submit
+ *      - /logout
+ * 
+ */
 class AuthController extends Controller
 {
-    public const EXPIRATION_TOKEN = 60 * 60 * 24 * 7;  // 1 week
+    public const EXPIRATION_TOKEN = 60 * 30;  // 30 minutes
     public const AUTH_COOKIE_NAME = "auth_token";
     public const AUTH_COOKIE = [
         "path" => "/",
