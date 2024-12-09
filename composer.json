@@ -21,9 +21,21 @@
   ],
   "version": "1.0.0",
   "license": "MIT",
+  "minimum-stability": "stable",
+  "prefer-stable": true,
   "require": {
+    "php": ">=7.4",
     "php-di/php-di": "^7.0",
     "vlucas/phpdotenv": "^5.6"
   },
-  "type": "library"
+  "type": "library",
+  "description": "A framework I made for a school project with a modular architecture and dependency injection.",
+  "keywords": [
+    "php",
+    "framework",
+    "raz",
+    "modular",
+    "dependency-injection",
+    "routing"
+  ]
 }
